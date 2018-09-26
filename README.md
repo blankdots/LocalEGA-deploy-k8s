@@ -10,6 +10,8 @@
 	- [Deploy LocalEGA](#deploy-localega)
 	- [Other useful information](#other-useful-information)
 - [Deployment for OpenShift](#deployment-for-openshift)
+- [Testing](#testing)
+
 
 
 ### Deployment via Python Script
@@ -124,10 +126,10 @@ keys_password =
 The YAML files (from the `yml` directory) represent vanilla deployment setup configuration for LocalEGA, configuration that does not include configuration/passwords for starting services. Such configuration can generated using the `make bootstrap` script in the `~/LocalEGA/deployment/docker` folder or provided per each case. The YAML file only provide base `hostPath` volumes, for other volume types check [Kubernetes Volumes](https://kubernetes.io/docs/concepts/storage/volumes/).
 
 Files that require configuration:
-* `keys/cm.keyserver.yml`
-* `keys/secret.keyserver.yml`
-* `lega-config/cm.lega.yml`
-* `lega-config/secret.lega.yml`
+* `data-in/keys/cm.keyserver.yml`
+* `data-in/keys/secret.keyserver.yml`
+* `data-in/lega-config/cm.lega.yml`
+* `data-in/lega-config/secret.lega.yml`
 
 When generating secrets from command line follow the instructions at [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) and use:
 ```
@@ -158,15 +160,15 @@ kubectl create -f ./cega-users --namespace=localega
 
 ####  Deploy LocalEGA
 ```
-kubectl create -f ./lega-config --namespace=localega
-kubectl create -f ./mq -f ./postgres -f ./s3 --namespace=localega
-kubectl create -f ./keys -f ./verify -f ./ingest -f ./inbox --namespace=localega
+kubectl create -f ./data-in/lega-config --namespace=localega
+kubectl create -f ./data-in/mq -f ./data-in/postgres -f ./data-in/s3 --namespace=localega
+kubectl create -f ./data-in/keys -f ./data-in/verify -f ./data-in/ingest -f ./data-in/inbox --namespace=localega
 ```
 
 #### Other useful information
 
 * See minikube services: `minikube service list`
-* Delete services: `kubectl delete -f ./keys`
+* Delete services: `kubectl delete -f ./data-in/keys`
 * Working with [volumes in Minio](https://vmware.github.io/vsphere-storage-for-kubernetes/documentation/minio.html)
 
 ### Deployment for OpenShift
@@ -178,3 +180,7 @@ The files provided in the `yml` directory can be reused for deployment to OpenSh
 * Postgres DB requires a different container therefore we provided a different YAML configuration file for it in the [`oc/postgres` directory](oc/postgres), also the volume attached to Postgres DB needs `ReadWriteMany` permissions.
 * Keyserver requires different configuration therefore we provided a different YAML configuration file for it in the [`oc/keys` directory](oc/keys).
 * Inbox requires different configuration therefore we provided a different YAML configuration file for it in the [`oc/inbox` directory](oc/inbox).
+
+### Testing
+
+Information about testing is available in [testing directory](test). We recommend using Version 2 with the `sftp.py`

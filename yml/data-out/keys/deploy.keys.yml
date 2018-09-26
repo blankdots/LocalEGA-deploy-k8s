@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: key-deploy
+spec:
+  replicas: 1
+  strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 1
+  selector:
+        matchLabels:
+          app: key-app
+  template:
+        metadata:
+          labels:
+            app: key-app
+        spec:
+          containers:
+          - name: key
+            image: <to add>
+            imagePullPolicy: Always
+            env:
+            - name: CONFIG_SERVICE
+              value: http://config.default.svc.cluster.local
+            ports:
+            - containerPort: 9095
+            livenessProbe:
+              tcpSocket:
+                port: 9095
+              initialDelaySeconds: 60
+              periodSeconds: 60
+            volumeMounts:
+              - mountPath: "/log"
+                name: log-directory
+          volumes:
+            - name: log-directory
+              hostPath:
+                path: /tmp/logs

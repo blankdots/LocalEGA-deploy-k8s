@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eureka-deploy
+spec:
+  replicas: 1
+  strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 1
+  selector:
+        matchLabels:
+          app: eureka-app
+  template:
+        metadata:
+          labels:
+            app: eureka-app
+        spec:
+          containers:
+          - name: eureka
+            image: <to add>
+            imagePullPolicy: Always
+            env:
+            - name: CONFIG_SERVICE
+              value: http://config.default.svc.cluster.local
+            ports:
+            - containerPort: 8761
+            livenessProbe:
+              tcpSocket:
+                port: 8761
+              initialDelaySeconds: 60
+              periodSeconds: 60
+            volumeMounts:
+              - mountPath: "/log"
+                name: log-directory
+          volumes:
+            - name: log-directory
+              hostPath:
+                path: /tmp/logs

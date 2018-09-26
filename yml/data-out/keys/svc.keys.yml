@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: key
+    labels:
+        app: key-app
+spec:
+    type: NodePort
+    ports:
+    -   port: 9095
+        nodePort: 30095
+        protocol: TCP
+        name: key-app-port
+    -   port: 5094
+        nodePort: 30094
+        protocol: TCP
+        name: key-debug-port
+    selector:
+        app: key-app

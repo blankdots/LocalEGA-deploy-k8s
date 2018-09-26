@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: dataedge
+    labels:
+        app: dataedge-app
+spec:
+    type: NodePort
+    ports:
+    -   port: 9059
+        nodePort: 30059
+        protocol: TCP
+        name: dataedge-app-port
+    -   port: 5058
+        nodePort: 30058
+        protocol: TCP
+        name: dataedge-debug-port
+    selector:
+        app: dataedge-app  

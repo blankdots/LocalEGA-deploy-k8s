@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: config
+    labels:
+        app: config-app
+spec:
+    ports:
+    -   port: 8888
+        protocol: TCP
+        name: config-app-port
+    selector:
+        app: config-app

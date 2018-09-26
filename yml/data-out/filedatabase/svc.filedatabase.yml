@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: filedatabase
+    labels:
+        app: filedatabase-app
+spec:
+    type: NodePort
+    ports:
+    -   port: 9050
+        nodePort: 30050
+        protocol: TCP
+        name: filedatabase-app-port
+    -   port: 5049
+        nodePort: 30049
+        protocol: TCP
+        name: filedatabase-debug-port
+    selector:
+        app: filedatabase-app

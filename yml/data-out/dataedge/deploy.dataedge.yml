@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dataedge-deploy
+spec:
+  replicas: 1
+  strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 1
+  selector:
+        matchLabels:
+          app: dataedge-app
+  template:
+        metadata:
+          labels:
+            app: dataedge-app
+        spec:
+          containers:
+          - name: dataedge
+            image: <to add>
+            imagePullPolicy: Always
+            env:
+            - name: CONFIG_SERVICE
+              value: http://config.default.svc.cluster.local
+            ports:
+            - containerPort: 9059
+            livenessProbe:
+              tcpSocket:
+                port: 9059
+              initialDelaySeconds: 60
+              periodSeconds: 60
+            volumeMounts:
+              - mountPath: "/log"
+          volumes:
+            - name: log-directory
+              hostPath:
+                path: /tmp/logs

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: eureka
+    labels:
+        app: eureka-app
+spec:
+    type: NodePort
+    ports:
+    -   port: 8761
+        nodePort: 30761
+        protocol: TCP
+        name: eureka-app-port
+    -   port: 5060
+        nodePort: 30060
+        protocol: TCP
+        name: eureka-debug-port
+    selector:
+        app: eureka-app

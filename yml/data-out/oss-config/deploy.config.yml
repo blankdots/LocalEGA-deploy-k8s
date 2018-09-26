@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-deploy
+spec:
+  replicas: 1
+  strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 1
+  selector:
+        matchLabels:
+          app: config-app
+  template:
+        metadata:
+          labels:
+            app: config-app
+        spec:
+          containers:
+          - name: config
+            image: <to add>
+            imagePullPolicy: Always
+            ports:
+            - containerPort: 8888
+            livenessProbe:
+              tcpSocket:
+                port: 8888
+              initialDelaySeconds: 60
+              periodSeconds: 60
+            volumeMounts:
+              - mountPath: "/log"
+                name: log-directory
+          imagePullSecrets:
+            - name:
+          volumes:
+            - name: log-directory
+              hostPath:
+                path: /tmp/logs
